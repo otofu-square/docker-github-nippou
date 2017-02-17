@@ -1,6 +1,30 @@
 #!/bin/bash
 
-docker run \
-  --env GITHUB_NIPPOU_USER=`git config --get github-nippou.user` \
-  --env GITHUB_NIPPOU_ACCESS_TOKEN=`git config --get github-nippou.token` \
+set -e
+
+if [ -z "$GITHUB_NIPPOU_USER"]; then
+  USER=`git config --get github-nippou.user`
+else
+  USER=$GITHUB_NIPPOU_USER
+fi
+
+if [ -z "$USER" ]; then
+  echo "Github user name is not found"
+  exit 0
+fi
+
+if [ -z "$GITHUB_NIPPOU_ACCESS_TOKEN"]; then
+  ACCESS_TOKEN=`git config --get github-nippou.token`
+else
+  ACCESS_TOKEN=$GITHUB_NIPPOU_ACCESS_TOKEN
+fi
+
+if [ -z "$ACCESS_TOKEN" ]; then
+  echo "Github access token is not found"
+  exit 0
+fi
+
+docker run --rm \
+  --env GITHUB_NIPPOU_USER=$USER \
+  --env GITHUB_NIPPOU_ACCESS_TOKEN=$ACCESS_TOKEN \
   otofusquare/github-nippou
